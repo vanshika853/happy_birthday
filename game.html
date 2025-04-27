@@ -13,7 +13,7 @@
       background-color: #f2f2f2;
     }
 
-     h1 {
+    h1 {
       color: #ff6f61;
       margin-top: 50px;
       font-size: 48px;
@@ -21,13 +21,12 @@
       animation: titleAnimation 2s ease-out forwards;
     }
 
-	@keyframes titleAnimation {
+    @keyframes titleAnimation {
       0% { opacity: 0; transform: translateY(-30px); }
       100% { opacity: 1; transform: translateY(0); }
     }
 
-   
-     .title-screen {
+    .title-screen {
       display: flex;
       justify-content: center;
       align-items: center;
@@ -39,7 +38,7 @@
       animation: gradientAnimation 3s infinite alternate;
     }
 
-         @keyframes gradientAnimation {
+    @keyframes gradientAnimation {
       0% { background-position: 0% 50%; }
       100% { background-position: 100% 50%; }
     }
@@ -156,50 +155,41 @@
   <!-- Balloon Pop Challenge -->
   <div class="challenge-section" id="balloon-section">
     <h2>Balloon Pop Challenge</h2>
-    <div class="balloon-container" id="balloon-container">
-      <!-- Balloons will be dynamically added here -->
-    </div>
+    <div class="balloon-container" id="balloon-container"></div>
     <p id="pop-count">Balloons popped: 0</p>
     <button class="button" onclick="resetChallenges()">Back to Title Screen</button>
   </div>
 
-  <!-- Find the Hidden Confetti -->
+  <!-- Confetti Challenge -->
   <div class="challenge-section" id="confetti-section">
     <h2>Find the Hidden Confetti</h2>
-    <div class="confetti-container" id="confetti-container">
-      <!-- Confetti will be dynamically added here -->
-    </div>
+    <div class="confetti-container" id="confetti-container"></div>
     <p id="message">Find the hidden confetti!</p>
     <button class="button" onclick="resetChallenges()">Back to Title Screen</button>
   </div>
 
   <script>
-    // Random Pastel Colors for Balloons and Confetti
     const pastelColors = [
       '#ffb3b3', '#b3c6ff', '#b3ffb3', '#ffccff', '#ffffb3',
       '#ffb3d9', '#c2b3ff', '#b3e0ff', '#ffd9b3', '#c3e6e6'
     ];
 
-    // Global variables to track counts and total items
     let popCount = 0;
     let totalBalloons = 10;
     let totalConfetti = 10;
 
-    // Show Balloon Pop Challenge
     function showBalloonChallenge() {
       document.querySelector('.title-screen').style.display = 'none';
       document.getElementById('balloon-section').style.display = 'block';
-      createBalloons(); // Create initial set of balloons
+      createBalloons();
     }
 
-    // Show Confetti Challenge
     function showConfettiChallenge() {
       document.querySelector('.title-screen').style.display = 'none';
       document.getElementById('confetti-section').style.display = 'block';
-      createConfetti(); // Create initial set of confetti
+      createConfetti();
     }
 
-    // Reset to Title Screen
     function resetChallenges() {
       document.querySelector('.title-screen').style.display = 'flex';
       document.getElementById('balloon-section').style.display = 'none';
@@ -208,18 +198,17 @@
       resetConfetti();
     }
 
-    // Balloon Pop Challenge with Random Positions and Colors
     function createBalloons() {
-      const balloonContainer = document.getElementById('balloon-container');
-      balloonContainer.innerHTML = ''; // Clear any existing balloons
+      const container = document.getElementById('balloon-container');
+      container.innerHTML = '';
       for (let i = 0; i < totalBalloons; i++) {
         const balloon = document.createElement('div');
         balloon.classList.add('balloon');
-        balloon.style.left = `${Math.random() * 90}%`; // Random horizontal position
-        balloon.style.top = `${Math.random() * 300}px`; // Random vertical position
-        balloon.style.backgroundColor = getRandomColor(); // Assign random pastel color
+        balloon.style.left = `${Math.random() * 90}%`;
+        balloon.style.top = `${Math.random() * 300}px`;
+        balloon.style.backgroundColor = getRandomColor();
         balloon.setAttribute('onclick', 'popBalloon(this)');
-        balloonContainer.appendChild(balloon);
+        container.appendChild(balloon);
       }
     }
 
@@ -228,49 +217,43 @@
       popCount++;
       document.getElementById('pop-count').textContent = `Balloons popped: ${popCount}`;
       if (popCount === totalBalloons) {
-        // Increase number of balloons after all are popped
-        totalBalloons += 5; 
-        setTimeout(createBalloons, 1000); // Create more balloons at random positions after all are popped
+        totalBalloons += 5;
+        setTimeout(createBalloons, 1000);
       }
     }
 
-    // Confetti Finding Challenge with Random Positions and Colors
     function createConfetti() {
-      const confettiContainer = document.getElementById('confetti-container');
-      confettiContainer.innerHTML = ''; // Clear any existing confetti
+      const container = document.getElementById('confetti-container');
+      container.innerHTML = '';
       for (let i = 0; i < totalConfetti; i++) {
         const confetti = document.createElement('div');
         confetti.classList.add('confetti');
-        confetti.style.left = `${Math.random() * 90}%`; // Random horizontal position
-        confetti.style.top = `${Math.random() * 300}px`; // Random vertical position
-        confetti.style.backgroundColor = getRandomColor(); // Assign random pastel color
+        confetti.style.left = `${Math.random() * 90}%`;
+        confetti.style.top = `${Math.random() * 300}px`;
+        confetti.style.backgroundColor = getRandomColor();
         confetti.setAttribute('onclick', 'revealConfetti()');
-        confettiContainer.appendChild(confetti);
+        container.appendChild(confetti);
       }
     }
 
     function revealConfetti() {
-      const confettiElement = event.target;
-      confettiElement.classList.add('reveal');
+      const confetti = event.target;
+      confetti.classList.add('reveal');
       document.getElementById('message').textContent = "You found the confetti!";
       if (document.querySelectorAll('.reveal').length === totalConfetti) {
-        // Increase number of confetti after all are revealed
-        totalConfetti += 5; 
-        setTimeout(createConfetti, 1000); // Create more confetti at random positions after all are revealed
+        totalConfetti += 5;
+        setTimeout(createConfetti, 1000);
       }
     }
 
-    // Get random pastel color
     function getRandomColor() {
       return pastelColors[Math.floor(Math.random() * pastelColors.length)];
     }
 
-    // Go to another page
     function goToOtherPage() {
-      window.location.href = "index.html"; // 🔁 Replace with actual file path
+      window.location.href = 'index.html'; // ✅ GitHub Pages friendly
     }
 
-    // Reset counts
     function resetBalloonCount() {
       popCount = 0;
       document.getElementById('pop-count').textContent = `Balloons popped: 0`;
