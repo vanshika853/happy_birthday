@@ -28,7 +28,7 @@
       opacity: 0;
       transform: translateY(20px);
       animation: fadeIn 2s forwards;
-      display: none;
+      display: block;
       z-index: 10;
     }
 
@@ -198,7 +198,7 @@
 
   <div class="popup-message" id="popup-message"></div>
 
-  <button class="button" onclick="goBackToTitleScreen()">Back to Title Screen</button>
+  <button class="return-button" id="returnBtn" onclick="goBackToTitleScreen()">Back to Title Screen</button>
 
   <audio id="backgroundMusic" loop>
     <source src="happy-birthday.mp3" type="audio/mp3" />
@@ -248,12 +248,10 @@
         setInterval(drawConfetti, 20);
       }
 
-      const pastelColors = ["#ffb3ba", "#ffdfba", "#ffffba", "#b3ffb3", "#b3c6ff", "#d6b3ff"];
-
       function createBalloon() {
         let balloon = document.createElement('div');
         balloon.classList.add('balloon');
-        balloon.style.backgroundColor = pastelColors[Math.floor(Math.random() * pastelColors.length)];
+        balloon.style.backgroundColor = "#ff6f91";  // Balloon color
         balloon.style.left = Math.random() * 100 + 'vw';
         balloon.style.animationDuration = (Math.random() * 3 + 4) + 's';
         document.body.appendChild(balloon);
@@ -281,21 +279,14 @@
         const name = document.getElementById('nameInput').value.trim();
         const popup = document.getElementById('popup-message');
         popup.innerHTML = name ? 
-          `Happy Birthday to the one who makes every day an adventure, ${name}! 🎉<br><br>
-          I love the way you make me laugh, the way you support me, and the way you make me feel loved. 💖<br><br>
-          I'm so grateful to have you in my life, and I can't wait to celebrate another year with you. 🎂<br><br>
-          May your birthday be filled with joy, happiness, and everything you wish for. I love you! 💕`
-          :
-          `Happy Birthday to the one who makes every day an adventure! 🎉<br><br>
-          I love the way you make me laugh, the way you support me, and the way you make me feel loved. 💖<br><br>
-          I'm so grateful to have you in my life, and I can't wait to celebrate another year with you. 🎂<br><br>
-          May your birthday be filled with joy, happiness, and everything you wish for. I love you! 💕`;
+          `Happy Birthday to the one who makes every day an adventure, ${name}! 🎉` 
+          : `Happy Birthday to the one who makes every day an adventure! 🎉`;
 
         popup.style.display = 'block';
         startConfetti();
         startBalloons();
         fadeInMusic();
-        document.querySelector('.return-button').style.display = 'inline-block';
+        document.getElementById('returnBtn').style.display = 'inline-block';  // Show return button
       }
 
       document.getElementById('nameInput').addEventListener('keydown', function (event) {
@@ -309,7 +300,7 @@
       function goBackToTitleScreen() {
         const birthdayCard = document.getElementById('birthdayCard');
         const popup = document.getElementById('popup-message');
-        const returnBtn = document.querySelector('.return-button');
+        const returnBtn = document.getElementById('returnBtn');
 
         // Hide the popup and reset any dynamic content
         popup.style.display = 'none';
