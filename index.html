@@ -1,11 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Happy Birthday!</title>
   <style>
-    /* Base Styles */
     body {
       margin: 0;
       height: 100vh;
@@ -111,8 +110,8 @@
 
     .balloon {
       position: absolute;
-      width: 60px;
-      height: 80px;
+      width: 40px;
+      height: 60px;
       border-radius: 50%;
       z-index: 5;
       animation: floatBalloon 7s ease-in-out infinite;
@@ -158,6 +157,8 @@
       left: 50%;
       transform: translateX(-50%);
       z-index: 150;
+      text-decoration: none;
+      text-align: center;
     }
 
     .return-button:hover {
@@ -165,7 +166,6 @@
       transform: scale(1.1);
     }
 
-    /* Responsive Fix */
     @media (max-width: 600px) {
       .birthday-card h1 {
         font-size: 2em;
@@ -173,14 +173,18 @@
       .birthday-card p {
         font-size: 1em;
       }
+
+      .balloon {
+        width: 30px;
+        height: 45px;
+      }
     }
   </style>
 </head>
-
 <body>
 
   <div class="name-input-container" id="nameInputContainer">
-    <input type="text" id="nameInput" placeholder="Enter their name" autofocus>
+    <input type="text" id="nameInput" placeholder="Enter their name" autofocus />
   </div>
 
   <div class="birthday-card" id="birthdayCard">
@@ -194,14 +198,16 @@
 
   <div class="popup-message" id="popup-message"></div>
 
-  <audio id="backgroundMusic">
-    <source src="happy-birthday.mp3" type="audio/mp3">
+  <!-- GitHub-compatible return link -->
+  <a href="birthday.html" class="return-button" id="returnBtn">Return to Birthday Page</a>
+
+  <audio id="backgroundMusic" loop>
+    <source src="happy-birthday.mp3" type="audio/mp3" />
     Your browser does not support the audio element.
   </audio>
 
   <script>
-    document.addEventListener('DOMContentLoaded', function() {
-
+    document.addEventListener('DOMContentLoaded', function () {
       const canvas = document.getElementById('confetti-canvas');
       const ctx = canvas.getContext('2d');
       canvas.width = window.innerWidth;
@@ -293,13 +299,7 @@
         document.getElementById('returnBtn').style.display = 'inline-block';
       }
 
-      function goBackToMainScreen() {
-        document.getElementById('popup-message').style.display = 'none';
-        document.getElementById('birthdayCard').style.display = 'block';
-        document.getElementById('returnBtn').style.display = 'none';
-      }
-
-      document.getElementById('nameInput').addEventListener('keydown', function(event) {
+      document.getElementById('nameInput').addEventListener('keydown', function (event) {
         if (event.key === 'Enter') {
           personalizeMessage();
         }
@@ -307,16 +307,9 @@
 
       document.getElementById('openGiftBtn').addEventListener('click', openGift);
 
-      document.getElementById('gameBtn').addEventListener('click', function() {
-        window.location.href = "game.html"; // Change if needed
+      document.getElementById('gameBtn').addEventListener('click', function () {
+        window.location.href = "game.html"; // GitHub-compatible link
       });
-
-      const returnBtn = document.createElement('button');
-      returnBtn.id = 'returnBtn';
-      returnBtn.classList.add('return-button');
-      returnBtn.textContent = 'Return to Main Screen';
-      returnBtn.addEventListener('click', goBackToMainScreen);
-      document.body.appendChild(returnBtn);
 
       function enableMusicOnInteraction() {
         const music = document.getElementById('backgroundMusic');
@@ -345,9 +338,7 @@
       }
 
       enableMusicOnInteraction();
-
     });
   </script>
-
 </body>
 </html>
