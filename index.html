@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Happy Birthday!</title>
+  <style>
+    /* Base Styles */
+    body {
+      margin: 0;
+      height: 100vh;
+      background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: 'Comic Sans MS', cursive, sans-serif;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .birthday-card {
+      background: white;
+      padding: 40px;
+      border-radius: 20px;
+      text-align: center;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+      max-width: 400px;
+      width: 90%;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeIn 2s forwards;
+      display: none;
+      z-index: 10;
+    }
+
+    @keyframes fadeIn {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .birthday-card h1 {
+      font-size: 2.5em;
+      margin-bottom: 20px;
+    }
+
+    .birthday-card p {
+      font-size: 1.2em;
+      margin-bottom: 30px;
+    }
+
+    .birthday-card button {
+      background-color: #ff6f91;
+      border: none;
+      padding: 15px 30px;
+      color: white;
+      font-size: 1em;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: background 0.3s, transform 0.3s;
+      margin: 10px 0;
+    }
+
+    .birthday-card button:hover {
+      background-color: #ff3e70;
+      transform: scale(1.1);
+    }
+
+    #confetti-canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .popup-message {
+      display: none;
+      position: fixed;
+      top: 40%;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 20px 30px;
+      background-color: #fff;
+      border-radius: 10px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      font-size: 1.5em;
+      color: #ff6f91;
+      animation: popupAnimation 1s forwards;
+      text-align: center;
+      font-family: 'Arial', sans-serif;
+      line-height: 1.6;
+      z-index: 100;
+      width: 90%;
+      max-width: 500px;
+    }
+
+    @keyframes popupAnimation {
+      from {
+        transform: translate(-50%, -50%) scale(0.5);
+        opacity: 0;
+      }
+      to {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 1;
+      }
+    }
+
+    .balloon {
+      position: absolute;
+      width: 60px;
+      height: 80px;
+      border-radius: 50%;
+      z-index: 5;
+      animation: floatBalloon 7s ease-in-out infinite;
+    }
+
+    @keyframes floatBalloon {
+      0% { transform: translateY(0); }
+      50% { transform: translateY(-30vh); }
+      100% { transform: translateY(-60vh); }
+    }
+
+    .name-input-container {
+      position: absolute;
+      top: 10%;
+      left: 50%;
+      transform: translateX(-50%);
+      text-align: center;
+      z-index: 20;
+    }
+
+    .name-input-container input {
+      padding: 10px;
+      font-size: 1.2em;
+      border-radius: 10px;
+      border: 1px solid #ff6f91;
+      outline: none;
+      width: 80%;
+      max-width: 300px;
+    }
+
+    .return-button {
+      background-color: #6fa3ff;
+      padding: 12px 24px;
+      font-size: 1em;
+      border-radius: 50px;
+      color: white;
+      margin-top: 20px;
+      cursor: pointer;
+      display: none;
+      transition: background 0.3s, transform 0.3s;
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 150;
+    }
+
+    .return-button:hover {
+      background-color: #4a85cc;
+      transform: scale(1.1);
+    }
+
+    /* Responsive Fix */
+    @media (max-width: 600px) {
+      .birthday-card h1 {
+        font-size: 2em;
+      }
+      .birthday-card p {
+        font-size: 1em;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="name-input-container" id="nameInputContainer">
+    <input type="text" id="nameInput" placeholder="Enter their name" autofocus>
+  </div>
+
+  <div class="birthday-card" id="birthdayCard">
+    <h1>🎂 Happy Birthday! 🎉</h1>
+    <p id="birthdayMessage">Wishing you a day filled with love, laughter, and happiness!</p>
+    <button id="openGiftBtn">Open Gift</button>
+    <button id="gameBtn">Play Game</button>
+  </div>
+
+  <canvas id="confetti-canvas"></canvas>
+
+  <div class="popup-message" id="popup-message"></div>
+
+  <audio id="backgroundMusic">
+    <source src="happy-birthday.mp3" type="audio/mp3">
+    Your browser does not support the audio element.
+  </audio>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+
+      const canvas = document.getElementById('confetti-canvas');
+      const ctx = canvas.getContext('2d');
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+
+      let confetti = [];
+      for (let i = 0; i < 600; i++) {
+        confetti.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height - canvas.height,
+          r: Math.random() * 6 + 2,
+          d: Math.random() * 100 + 10,
+          color: `hsl(${Math.random() * 360}, 70%, 60%)`,
+          tilt: Math.random() * 10 - 10
+        });
+      }
+
+      function drawConfetti() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        confetti.forEach(c => {
+          ctx.beginPath();
+          ctx.lineWidth = c.r;
+          ctx.strokeStyle = c.color;
+          ctx.moveTo(c.x, c.y);
+          ctx.lineTo(c.x + c.tilt, c.y + c.r * 2);
+          ctx.stroke();
+        });
+        confetti.forEach(c => {
+          c.y += Math.cos(c.d) + 1 + c.r / 2;
+          c.x += Math.sin(c.d);
+          if (c.y > canvas.height) {
+            c.y = -10;
+            c.x = Math.random() * canvas.width;
+          }
+        });
+      }
+
+      function startConfetti() {
+        setInterval(drawConfetti, 20);
+      }
+
+      const pastelColors = ["#ffb3ba", "#ffdfba", "#ffffba", "#b3ffb3", "#b3c6ff", "#d6b3ff"];
+
+      function createBalloon() {
+        let balloon = document.createElement('div');
+        balloon.classList.add('balloon');
+        balloon.style.backgroundColor = pastelColors[Math.floor(Math.random() * pastelColors.length)];
+        balloon.style.left = Math.random() * 100 + 'vw';
+        balloon.style.animationDuration = (Math.random() * 3 + 4) + 's';
+        document.body.appendChild(balloon);
+        setTimeout(() => balloon.remove(), 7000);
+      }
+
+      function startBalloons() {
+        setInterval(createBalloon, 500);
+      }
+
+      function personalizeMessage() {
+        const name = document.getElementById('nameInput').value.trim();
+        const birthdayMessage = document.getElementById('birthdayMessage');
+        const birthdayCard = document.getElementById('birthdayCard');
+        const nameInputContainer = document.getElementById('nameInputContainer');
+
+        if (name.length >= 2) {
+          birthdayMessage.innerHTML = `🎂 Happy Birthday, ${name}! 🎉<br>Wishing you a day filled with love, laughter, and happiness!`;
+          nameInputContainer.style.display = 'none';
+          birthdayCard.style.display = 'block';
+        }
+      }
+
+      function openGift() {
+        const name = document.getElementById('nameInput').value.trim();
+        const popup = document.getElementById('popup-message');
+        popup.innerHTML = name ?
+          `Happy Birthday to the one who makes every day an adventure, ${name}! 🎉<br><br>
+          I love the way you make me laugh, the way you support me, and the way you make me feel loved. 💖<br><br>
+          I'm so grateful to have you in my life, and I can't wait to celebrate another year with you. 🎂<br><br>
+          May your birthday be filled with joy, happiness, and everything you wish for. I love you! 💕`
+          :
+          `Happy Birthday to the one who makes every day an adventure! 🎉<br><br>
+          I love the way you make me laugh, the way you support me, and the way you make me feel loved. 💖<br><br>
+          I'm so grateful to have you in my life, and I can't wait to celebrate another year with you. 🎂<br><br>
+          May your birthday be filled with joy, happiness, and everything you wish for. I love you! 💕`;
+
+        popup.style.display = 'block';
+        startConfetti();
+        startBalloons();
+        fadeInMusic();
+        document.getElementById('returnBtn').style.display = 'inline-block';
+      }
+
+      function goBackToMainScreen() {
+        document.getElementById('popup-message').style.display = 'none';
+        document.getElementById('birthdayCard').style.display = 'block';
+        document.getElementById('returnBtn').style.display = 'none';
+      }
+
+      document.getElementById('nameInput').addEventListener('keydown', function(event) {
+        if (event.key === 'Enter') {
+          personalizeMessage();
+        }
+      });
+
+      document.getElementById('openGiftBtn').addEventListener('click', openGift);
+
+      document.getElementById('gameBtn').addEventListener('click', function() {
+        window.location.href = "file:///C:/Users/ADMIN%20PC/Downloads/New%20folder/game.html"; // Change if needed
+      });
+
+      const returnBtn = document.createElement('button');
+      returnBtn.id = 'returnBtn';
+      returnBtn.classList.add('return-button');
+      returnBtn.textContent = 'Return to Main Screen';
+      returnBtn.addEventListener('click', goBackToMainScreen);
+      document.body.appendChild(returnBtn);
+
+      function enableMusicOnInteraction() {
+        const music = document.getElementById('backgroundMusic');
+        function playMusic() {
+          music.play();
+          document.removeEventListener('click', playMusic);
+          document.removeEventListener('touchstart', playMusic);
+        }
+        document.addEventListener('click', playMusic);
+        document.addEventListener('touchstart', playMusic);
+      }
+
+      function fadeInMusic() {
+        const music = document.getElementById('backgroundMusic');
+        music.volume = 0;
+        let volume = 0;
+        music.play();
+        const fadeInterval = setInterval(() => {
+          if (volume < 1) {
+            volume += 0.05;
+            music.volume = Math.min(volume, 1);
+          } else {
+            clearInterval(fadeInterval);
+          }
+        }, 200);
+      }
+
+      enableMusicOnInteraction();
+
+    });
+  </script>
+
+</body>
+</html>

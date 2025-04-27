@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Birthday Fun Challenges</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+      background-color: #f2f2f2;
+    }
+
+     h1 {
+      color: #ff6f61;
+      margin-top: 50px;
+      font-size: 48px;
+      font-weight: bold;
+      animation: titleAnimation 2s ease-out forwards;
+    }
+
+	@keyframes titleAnimation {
+      0% { opacity: 0; transform: translateY(-30px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+   
+     .title-screen {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      height: 100vh;
+      position: relative;
+      background: linear-gradient(135deg, #ffccff, #c2b3ff);
+      background-size: 200% 200%;
+      animation: gradientAnimation 3s infinite alternate;
+    }
+
+         @keyframes gradientAnimation {
+      0% { background-position: 0% 50%; }
+      100% { background-position: 100% 50%; }
+    }
+
+    .button {
+      background-color: #ff6f61;
+      color: white;
+      border: none;
+      padding: 15px 25px;
+      margin: 10px;
+      font-size: 18px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .button:hover {
+      background-color: #ff8c69;
+    }
+
+    .challenge-section {
+      display: none;
+      margin: 40px;
+      padding: 20px;
+      background-color: #fff;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .balloon-container {
+      position: relative;
+      height: 400px;
+      margin-bottom: 20px;
+    }
+
+    .balloon {
+      width: 80px;
+      height: 120px;
+      border-radius: 50%;
+      position: absolute;
+      animation: float 5s infinite;
+      cursor: pointer;
+    }
+
+    @keyframes float {
+      0% { transform: translateY(0); }
+      50% { transform: translateY(-50px); }
+      100% { transform: translateY(0); }
+    }
+
+    .pop {
+      animation: pop-animation 0.8s forwards, bounce-animation 0.6s forwards;
+    }
+
+    @keyframes pop-animation {
+      0% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.3); opacity: 0.6; }
+      100% { transform: scale(0); opacity: 0; }
+    }
+
+    @keyframes bounce-animation {
+      0% { transform: scale(1); }
+      30% { transform: scale(1.2); }
+      50% { transform: scale(0.8); }
+      70% { transform: scale(1.1); }
+      100% { transform: scale(1); opacity: 0; }
+    }
+
+    .confetti-container {
+      position: relative;
+      height: 400px;
+    }
+
+    .confetti {
+      width: 50px;
+      height: 50px;
+      position: absolute;
+      cursor: pointer;
+      animation: fadeIn 2s;
+    }
+
+    @keyframes fadeIn {
+      0% { opacity: 0; }
+      100% { opacity: 1; }
+    }
+
+    .reveal {
+      animation: confettiFall 1.5s forwards, confettiSpin 0.8s forwards;
+    }
+
+    @keyframes confettiFall {
+      0% { transform: translateY(0); opacity: 1; }
+      100% { transform: translateY(200px); opacity: 0; }
+    }
+
+    @keyframes confettiSpin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); opacity: 0; }
+    }
+
+    .hidden { background-color: transparent; pointer-events: none; }
+  </style>
+</head>
+<body>
+
+  <!-- Title Screen -->
+  <div class="title-screen">
+    <h1>Birthday Fun Challenges</h1>
+    <button class="button" onclick="showBalloonChallenge()">How many balloons can you pop?</button>
+    <button class="button" onclick="showConfettiChallenge()">Can you find the hidden confetti?</button>
+    <button class="button" onclick="goToOtherPage()">Return to Main Page</button>
+  </div>
+
+  <!-- Balloon Pop Challenge -->
+  <div class="challenge-section" id="balloon-section">
+    <h2>Balloon Pop Challenge</h2>
+    <div class="balloon-container" id="balloon-container">
+      <!-- Balloons will be dynamically added here -->
+    </div>
+    <p id="pop-count">Balloons popped: 0</p>
+    <button class="button" onclick="resetChallenges()">Back to Title Screen</button>
+  </div>
+
+  <!-- Find the Hidden Confetti -->
+  <div class="challenge-section" id="confetti-section">
+    <h2>Find the Hidden Confetti</h2>
+    <div class="confetti-container" id="confetti-container">
+      <!-- Confetti will be dynamically added here -->
+    </div>
+    <p id="message">Find the hidden confetti!</p>
+    <button class="button" onclick="resetChallenges()">Back to Title Screen</button>
+  </div>
+
+  <script>
+    // Random Pastel Colors for Balloons and Confetti
+    const pastelColors = [
+      '#ffb3b3', '#b3c6ff', '#b3ffb3', '#ffccff', '#ffffb3',
+      '#ffb3d9', '#c2b3ff', '#b3e0ff', '#ffd9b3', '#c3e6e6'
+    ];
+
+    // Global variables to track counts and total items
+    let popCount = 0;
+    let totalBalloons = 10;
+    let totalConfetti = 10;
+
+    // Show Balloon Pop Challenge
+    function showBalloonChallenge() {
+      document.querySelector('.title-screen').style.display = 'none';
+      document.getElementById('balloon-section').style.display = 'block';
+      createBalloons(); // Create initial set of balloons
+    }
+
+    // Show Confetti Challenge
+    function showConfettiChallenge() {
+      document.querySelector('.title-screen').style.display = 'none';
+      document.getElementById('confetti-section').style.display = 'block';
+      createConfetti(); // Create initial set of confetti
+    }
+
+    // Reset to Title Screen
+    function resetChallenges() {
+      document.querySelector('.title-screen').style.display = 'flex';
+      document.getElementById('balloon-section').style.display = 'none';
+      document.getElementById('confetti-section').style.display = 'none';
+      resetBalloonCount();
+      resetConfetti();
+    }
+
+    // Balloon Pop Challenge with Random Positions and Colors
+    function createBalloons() {
+      const balloonContainer = document.getElementById('balloon-container');
+      balloonContainer.innerHTML = ''; // Clear any existing balloons
+      for (let i = 0; i < totalBalloons; i++) {
+        const balloon = document.createElement('div');
+        balloon.classList.add('balloon');
+        balloon.style.left = `${Math.random() * 90}%`; // Random horizontal position
+        balloon.style.top = `${Math.random() * 300}px`; // Random vertical position
+        balloon.style.backgroundColor = getRandomColor(); // Assign random pastel color
+        balloon.setAttribute('onclick', 'popBalloon(this)');
+        balloonContainer.appendChild(balloon);
+      }
+    }
+
+    function popBalloon(balloon) {
+      balloon.classList.add('pop');
+      popCount++;
+      document.getElementById('pop-count').textContent = `Balloons popped: ${popCount}`;
+      if (popCount === totalBalloons) {
+        // Increase number of balloons after all are popped
+        totalBalloons += 5; 
+        setTimeout(createBalloons, 1000); // Create more balloons at random positions after all are popped
+      }
+    }
+
+    // Confetti Finding Challenge with Random Positions and Colors
+    function createConfetti() {
+      const confettiContainer = document.getElementById('confetti-container');
+      confettiContainer.innerHTML = ''; // Clear any existing confetti
+      for (let i = 0; i < totalConfetti; i++) {
+        const confetti = document.createElement('div');
+        confetti.classList.add('confetti');
+        confetti.style.left = `${Math.random() * 90}%`; // Random horizontal position
+        confetti.style.top = `${Math.random() * 300}px`; // Random vertical position
+        confetti.style.backgroundColor = getRandomColor(); // Assign random pastel color
+        confetti.setAttribute('onclick', 'revealConfetti()');
+        confettiContainer.appendChild(confetti);
+      }
+    }
+
+    function revealConfetti() {
+      const confettiElement = event.target;
+      confettiElement.classList.add('reveal');
+      document.getElementById('message').textContent = "You found the confetti!";
+      if (document.querySelectorAll('.reveal').length === totalConfetti) {
+        // Increase number of confetti after all are revealed
+        totalConfetti += 5; 
+        setTimeout(createConfetti, 1000); // Create more confetti at random positions after all are revealed
+      }
+    }
+
+    // Get random pastel color
+    function getRandomColor() {
+      return pastelColors[Math.floor(Math.random() * pastelColors.length)];
+    }
+
+    // Go to another page
+    function goToOtherPage() {
+      window.location.href = 'file:///C:/Users/ADMIN%20PC/Downloads/New%20folder/hbb1.html'; // 🔁 Replace with actual file path
+    }
+
+    // Reset counts
+    function resetBalloonCount() {
+      popCount = 0;
+      document.getElementById('pop-count').textContent = `Balloons popped: 0`;
+    }
+
+    function resetConfetti() {
+      document.getElementById('message').textContent = "Find the hidden confetti!";
+    }
+  </script>
+
+</body>
+</html>
