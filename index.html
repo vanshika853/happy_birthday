@@ -198,8 +198,7 @@
 
   <div class="popup-message" id="popup-message"></div>
 
-  <!-- GitHub-compatible return link -->
-  <a href="open-gift.html" class="return-button" id="returnBtn">Return to Open Gift</a>
+  <button class="button" onclick="goBackToTitleScreen()">Back to Title Screen</button>
 
   <audio id="backgroundMusic" loop>
     <source src="happy-birthday.mp3" type="audio/mp3" />
@@ -281,7 +280,7 @@
       function openGift() {
         const name = document.getElementById('nameInput').value.trim();
         const popup = document.getElementById('popup-message');
-        popup.innerHTML = name ?
+        popup.innerHTML = name ? 
           `Happy Birthday to the one who makes every day an adventure, ${name}! 🎉<br><br>
           I love the way you make me laugh, the way you support me, and the way you make me feel loved. 💖<br><br>
           I'm so grateful to have you in my life, and I can't wait to celebrate another year with you. 🎂<br><br>
@@ -296,7 +295,7 @@
         startConfetti();
         startBalloons();
         fadeInMusic();
-        document.getElementById('returnBtn').style.display = 'inline-block';
+        document.querySelector('.return-button').style.display = 'inline-block';
       }
 
       document.getElementById('nameInput').addEventListener('keydown', function (event) {
@@ -307,9 +306,17 @@
 
       document.getElementById('openGiftBtn').addEventListener('click', openGift);
 
-      document.getElementById('gameBtn').addEventListener('click', function () {
-        window.location.href = "game.html"; // GitHub-compatible link
-      });
+      function goBackToTitleScreen() {
+        const birthdayCard = document.getElementById('birthdayCard');
+        const popup = document.getElementById('popup-message');
+        const returnBtn = document.querySelector('.return-button');
+
+        // Hide the popup and reset any dynamic content
+        popup.style.display = 'none';
+        returnBtn.style.display = 'none';
+        birthdayCard.style.display = 'block';
+        document.getElementById('nameInputContainer').style.display = 'block';
+      }
 
       function enableMusicOnInteraction() {
         const music = document.getElementById('backgroundMusic');
